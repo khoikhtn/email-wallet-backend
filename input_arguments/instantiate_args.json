@@ -1,0 +1,15 @@
+{
+  "name": "XionCw20",
+  "symbol": "SDK",
+  "decimals": 6,
+  "initial_balances": [
+    {
+      "address": "xion1evk2njdl5wx55sewayf6c248djsqszj76rduf2",
+      "amount": "10000000"
+    }
+  ],
+  "mint": {
+    "minter": "xion1evk2njdl5wx55sewayf6c248djsqszj76rduf2",
+    "cap": "99900000000"
+  }
+}
