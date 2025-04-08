@@ -31,6 +31,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "firebase": "^11.6.0",
     "fs": "^0.0.1-security",
     "nodemailer": "^6.9.16",
     "supertest": "^7.0.0",

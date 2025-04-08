@@ -14,6 +14,7 @@ import transferCW20Router from "./routes/transferCW20";
 import getWalletBalanceRouter from "./routes/getAccountBalance";
 import sendRouter from "./routes/sendRouter";
 import getWalletAddressUsingEmailRouter from "./routes/getWalletAddressUsingEmail";
+import transactionsRouter from "./routes/transactionsHistory";
 
 const app = express();
 app.use(express.json());
@@ -34,6 +35,7 @@ app.use("/", transferCW20Router);
 app.use("/", getWalletBalanceRouter);
 app.use("/", sendRouter);
 app.use("/", getWalletAddressUsingEmailRouter);
+app.use("/", transactionsRouter);
 
 
 const PORT = process.env.PORT || 3000;
