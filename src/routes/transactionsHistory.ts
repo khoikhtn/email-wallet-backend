@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express";
 import transactionDatabase from "../utils/firebaseConfig";
-import { collection, query, where, getDocs, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 
 const transactionsRouter = express.Router();
 const collectionRef = collection(transactionDatabase, "transactions");
@@ -23,13 +23,14 @@ transactionsRouter.get(
       const q = query(collectionRef, where("wallet_address", "==", wallet));
       const querySnapshot = await getDocs(q);
 
-      const [doc] = querySnapshot.docs;
+      const transactions = querySnapshot.docs.map((doc) => doc.data())
 
       res.json({
-        transaction: doc.data(),
+        transactions,
       })
     } catch (err) {
-      throw err;
+      console.error("Error fetching transaction with wallet address:", wallet, err);
+      res.status(500).json({ message: `Error fetching transaction with wallet address: ${wallet}` });
     }
   }
 )
@@ -49,15 +50,15 @@ transactionsRouter.post(
         timestamp: timestamp || new Date().toISOString(),
       };
 
-      const docRef = doc(transactionDatabase, "transactions", wallet_address);
-      await setDoc(docRef, data, { merge: true });
+      const docRef = await addDoc(collectionRef, data);
 
       res.status(201).json({
-        message: "Transaction stored successfully",
-        docId: wallet_address,
+        message: "Transaction added successfully",
+        docId: docRef.id,
       });
+
     } catch (err) {
-      console.error("Error writing transaction:", err);
+      console.error("Error adding transaction:", err);
       res.status(500).json({ message: "Internal server error" });
     }
   }
