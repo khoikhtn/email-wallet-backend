@@ -6,9 +6,9 @@ const transactionsRouter = express.Router();
 const collectionRef = collection(transactionDatabase, "transactions");
 
 export type TransactionBody = {
-  wallet_address: string;
+  sender: string;
+  recipient: string;
   action: string;
-  timestamp?: string;
 }
 
 transactionsRouter.get(
@@ -20,10 +20,22 @@ transactionsRouter.get(
     const wallet = req.params.wallet;
 
     try {
-      const q = query(collectionRef, where("wallet_address", "==", wallet));
-      const querySnapshot = await getDocs(q);
+      const senderQuery = query(collectionRef, where("sender", "==", wallet));
+      const recipientQuery = query(collectionRef, where("recipient", "==", wallet));
 
-      const transactions = querySnapshot.docs.map((doc) => doc.data())
+      const [senderSnapshot, recipientSnapshot] = await Promise.all([
+        getDocs(senderQuery),
+        getDocs(recipientQuery),
+      ]);
+
+      const transactions = [
+        ...senderSnapshot.docs.map((doc) => doc.data()),
+        ...recipientSnapshot.docs.map((doc) => doc.data()),
+      ];
+
+      transactions.sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );      
 
       res.json({
         transactions,
@@ -41,13 +53,14 @@ transactionsRouter.post(
     req: Request<never, never, TransactionBody>,
     res: Response
   ) => {
-    const { wallet_address, action, timestamp } = req.body;
+    const { sender, recipient, action } = req.body;
 
     try {
       const data = {
-        wallet_address,
+        sender,
+        recipient,
         action,
-        timestamp: timestamp || new Date().toISOString(),
+        timestamp: new Date().toISOString(),
       };
 
       const docRef = await addDoc(collectionRef, data);

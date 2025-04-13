@@ -9,7 +9,6 @@ import params from "./routes/params";
 import transferNFTRouter from "./routes/transferNFT";
 import mintNFTRouter from "./routes/mintNFT";
 import registerRelayerRouter from "./routes/registerRelayer";
-import getTransactions from "./routes/getTransactions";
 import transferCW20Router from "./routes/transferCW20";
 import getWalletBalanceRouter from "./routes/getAccountBalance";
 import sendRouter from "./routes/sendRouter";
@@ -24,7 +23,6 @@ app.use(cookieParser());
 
 app.get("/", (_req, res) => res.status(200).send("OK"));
 app.use("/", createAccountRouter);
-app.use("/", getTransactions);
 app.use("/", transferTokenRouter);
 app.use("/", getWalletAddressRouter);
 app.use("/", transferNFTRouter);

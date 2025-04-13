@@ -27,15 +27,5 @@ export async function transferToken(
     gasLimit
   );
 
-  const filePath = "./transactions/txResult.txt"
-
-  try {
-    await fs.mkdir("./transactions", { recursive: true });
-
-    await fs.appendFile(filePath, `${txRes.transactionHash}\n`);
-  } catch (error) {
-    console.error("Cannot saving transaction hash")
-  }
-
   return txRes.transactionHash;
 }
